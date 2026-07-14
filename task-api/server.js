@@ -1,9 +1,13 @@
 const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./openapi.json");
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 let tasks = [
   {
@@ -90,8 +94,10 @@ app.put("/tasks/:id", (req, res) => {
     });
   }
 
+  // Request body se values lo
   const { title, done } = req.body;
 
+  // Sirf jo fields aayi hain unko update karo
   if (title !== undefined) {
     task.title = title;
   }
@@ -102,8 +108,6 @@ app.put("/tasks/:id", (req, res) => {
 
   res.json(task);
 });
-
-
 
 // delete
 
