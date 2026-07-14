@@ -5,6 +5,24 @@ const port = 3000;
 
 app.use(express.json());
 
+let tasks = [
+  {
+    id: 1,
+    title: "learn express",
+    done: false,
+  },
+  {
+    id: 2,
+    title: "Complete Flyrank assignment",
+    done: false,
+  },
+  {
+    id: 100,
+    title: "push to github",
+    done: false,
+  },
+];
+
 app.get("/", (req, res) => {
   res.json({
     name: "taskAPI",
@@ -17,6 +35,26 @@ app.get("/health", (req, res) => {
   res.json({
     status: "success",
   });
+});
+
+
+
+app.get("/tasks", (req, res) => {
+  res.json(tasks);
+});
+
+
+
+
+app.get("/tasks/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const task = tasks.find((t) => t.id === id);
+  if (!task) {
+    return res.status(404).json({
+      error: `task ${id} not found`,
+    });
+  }
+  res.json(task);
 });
 
 // server start
