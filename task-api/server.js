@@ -17,7 +17,7 @@ let tasks = [
     done: false,
   },
   {
-    id: 100,
+    id: 3,
     title: "push to github",
     done: false,
   },
@@ -37,14 +37,9 @@ app.get("/health", (req, res) => {
   });
 });
 
-
-
 app.get("/tasks", (req, res) => {
   res.json(tasks);
 });
-
-
-
 
 app.get("/tasks/:id", (req, res) => {
   const id = Number(req.params.id);
@@ -57,6 +52,29 @@ app.get("/tasks/:id", (req, res) => {
   res.json(task);
 });
 
+// post
+
+app.post("/tasks", (req, res) => {
+  const { title } = req.body;
+
+  // Validation
+  if (!title) {
+    return res.status(400).json({
+      error: "Title is required",
+    });
+  }
+
+  // Create Task
+  const newTask = {
+    id: tasks.length + 1,
+    title: title,
+    done: false,
+  };
+
+  tasks.push(newTask);
+
+  res.status(201).json(newTask);
+});
 // server start
 app.listen(port, () => {
   console.log(`server is running on port :${port}`);
