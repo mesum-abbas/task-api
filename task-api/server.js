@@ -75,6 +75,33 @@ app.post("/tasks", (req, res) => {
 
   res.status(201).json(newTask);
 });
+
+
+//put
+
+app.put("/tasks/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const task = tasks.find((t) => t.id === id);
+
+  if (!task) {
+    return res.status(404).json({
+      error: "Task not found",
+    });
+  }
+
+  const { title, done } = req.body;
+
+  if (title !== undefined) {
+    task.title = title;
+  }
+
+  if (done !== undefined) {
+    task.done = done;
+  }
+
+  res.json(task);
+});
 // server start
 app.listen(port, () => {
   console.log(`server is running on port :${port}`);
