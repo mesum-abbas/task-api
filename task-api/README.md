@@ -176,3 +176,35 @@ This confirms data persistence using Docker Volumes.
 ## Author
 
 Mesum Abbas
+# SQLite Database
+
+## Why SQLite?
+
+SQLite was chosen because it is lightweight, requires no separate server, and stores data in a single database file. It is ideal for learning CRUD operations and persistence.
+
+## Database File
+
+The database is stored locally as:
+
+```
+task.db
+```
+
+## Run the Project
+
+```bash
+npm install
+npm start
+```
+
+The database and tasks table will be created automatically if they do not already exist.
+
+## Example SQL Query
+
+```sql
+SELECT * FROM tasks;
+```
+
+## Database Screenshot
+
+(Insert screenshot of DB Browser here.)
