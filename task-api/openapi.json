@@ -10,6 +10,17 @@
       "url": "http://localhost:3000"
     }
   ],
+
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+
   "paths": {
     "/": {
       "get": {
@@ -21,6 +32,7 @@
         }
       }
     },
+
     "/health": {
       "get": {
         "summary": "Health Check",
@@ -31,12 +43,130 @@
         }
       }
     },
+
+    "/public/info": {
+      "get": {
+        "summary": "Public Information",
+        "responses": {
+          "200": {
+            "description": "Public response"
+          }
+        }
+      }
+    },
+
+    "/auth/signup": {
+      "post": {
+        "summary": "Signup User",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "user@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User Created"
+          },
+          "400": {
+            "description": "Invalid Input"
+          }
+        }
+      }
+    },
+
+    "/auth/login": {
+      "post": {
+        "summary": "Login User",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "user@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login Successful"
+          },
+          "401": {
+            "description": "Invalid Credentials"
+          }
+        }
+      }
+    },
+
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout User",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Logged Out"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+
+    "/protected/profile": {
+      "get": {
+        "summary": "Get User Profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile Returned"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+
     "/tasks": {
       "get": {
         "summary": "Get all tasks",
         "responses": {
           "200": {
-            "description": "List of tasks"
+            "description": "Task List"
           }
         }
       },
@@ -50,7 +180,8 @@
                 "type": "object",
                 "properties": {
                   "title": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Learn Express"
                   }
                 }
               }
@@ -59,14 +190,15 @@
         },
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Task Created"
           }
         }
       }
     },
+
     "/tasks/{id}": {
       "get": {
-        "summary": "Get Task by ID",
+        "summary": "Get Task By ID",
         "parameters": [
           {
             "name": "id",
@@ -82,10 +214,11 @@
             "description": "Success"
           },
           "404": {
-            "description": "Not Found"
+            "description": "Task Not Found"
           }
         }
       },
+
       "put": {
         "summary": "Update Task",
         "parameters": [
@@ -107,7 +240,7 @@
                 "properties": {
                   "title": {
                     "type": "string",
-                    "example": "Learn Express.js"
+                    "example": "Learn Node.js"
                   },
                   "done": {
                     "type": "boolean",
@@ -120,13 +253,14 @@
         },
         "responses": {
           "200": {
-            "description": "Updated successfully"
+            "description": "Task Updated"
           },
           "404": {
-            "description": "Task not found"
+            "description": "Task Not Found"
           }
         }
       },
+
       "delete": {
         "summary": "Delete Task",
         "parameters": [
@@ -141,7 +275,10 @@
         ],
         "responses": {
           "204": {
-            "description": "Deleted"
+            "description": "Task Deleted"
+          },
+          "404": {
+            "description": "Task Not Found"
           }
         }
       }

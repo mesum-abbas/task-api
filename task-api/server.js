@@ -4,6 +4,8 @@ const swaggerDocument = require("./openapi.json");
 const pool = require("./db");
 const Database = require("better-sqlite3");
 const db = new Database("task.db");
+const authMiddleware = require("./middleware/auth");
+const supabase = require("./supabase");
 
 db.prepare(
   `
@@ -16,9 +18,7 @@ CREATE TABLE IF NOT EXISTS tasks (
 ).run();
 const count = db.prepare("SELECT COUNT(*) as total FROM tasks").get();
 if (count.total === 0) {
-  const insert = db.prepare(
-    "INSERT INTO tasks (title, done) VALUES (?, ?)"
-  );
+  const insert = db.prepare("INSERT INTO tasks (title, done) VALUES (?, ?)");
 
   insert.run("Learn Express", 0);
   insert.run("Learn SQLite", 0);
@@ -156,6 +156,88 @@ app.delete("/tasks/:id", (req, res) => {
     res.status(500).json({
       error: err.message,
     });
+  }
+});
+
+app.post("/auth/signup", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validation
+    if (!email || !password) {
+      return res.status(400).json({
+        error: "Email and password are required",
+      });
+    }
+
+    // Signup with Supabase
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    // Supabase Error
+    if (error) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+
+    // Success
+    res.status(201).json(data);
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+});
+
+app.post("/auth/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        error: "Email and password are required",
+      });
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      return res.status(401).json({
+        error: error.message,
+      });
+    }
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+});
+
+
+app.get("/public/info", (req, res) => {
+  res.status(200).json({
+    message: "Welcome stranger! This info is public.",
+  });
+});
+
+app.get("/protected/profile", authMiddleware, (req, res) => {
+  res.status(200).json(req.user);
+});
+
+app.post("/auth/logout", authMiddleware, async (req, res) => {
+  try {
+    // logout
+    // 204
+  } catch (err) {
+    //500
   }
 });
 // server start

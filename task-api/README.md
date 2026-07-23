@@ -208,3 +208,50 @@ SELECT * FROM tasks;
 ## Database Screenshot
 
 (Insert screenshot of DB Browser here.)
+
+# Task API
+
+## Features
+
+- Signup
+- Login
+- Logout
+- JWT Authentication
+- Protected Routes
+- Swagger UI
+
+## Installation
+
+npm install
+
+## Run
+
+npm start
+
+## Environment Variables
+
+SUPABASE_URL=
+
+SUPABASE_KEY=
+
+PORT=3000
+
+## API
+
+POST /auth/signup
+
+POST /auth/login
+
+POST /auth/logout
+
+GET /protected/profile
+
+GET /public/info
+
+GET /tasks
+
+POST /tasks
+
+PUT /tasks/:id
+
+DELETE /tasks/:id
